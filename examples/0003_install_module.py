@@ -1,0 +1,1 @@
+/home/openerp/releases/0003_install_module.py

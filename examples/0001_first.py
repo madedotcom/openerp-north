@@ -1,0 +1,1 @@
+/home/openerp/releases/0001_first.py
