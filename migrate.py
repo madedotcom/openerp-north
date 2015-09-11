@@ -1,11 +1,11 @@
 import os, sys
-from openerp import pooler, tools, netsvc
+from openerp import tools, netsvc
 import openerp
 import threading
 import glob
 import importlib
 import argparse
-
+from util import PoolProxy
 
 # TODO: self install through migrate
 # TODO: rename to something else that is not migrate since that sounds like migration to v8
@@ -84,12 +84,12 @@ def apply_steps(cr, pool):
             apply_step(cr, pool, step)
             store_applied(cr, pool, step)
     else:
-        print "Nothing to apply. Everything up to date."
+        print "\033[92mNothing to apply. Everything up to date.\033[0m"
 
 
 def apply_step(cr, pool, name):
     mod = importlib.import_module(name)
-    print("***** appling %s ******" % name)
+    print("\033[92m[%s]\033[0m" % name)
     mod.main(cr, pool)
 
 
@@ -136,7 +136,8 @@ def main():
     load_config()
 
     db_name = tools.config['db_name']
-    pool = pooler.get_pool(db_name)
+
+    pool = PoolProxy(db_name)
 
     cr = cursor()
     apply_steps(cr, pool)
