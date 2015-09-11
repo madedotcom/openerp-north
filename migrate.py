@@ -1,11 +1,10 @@
 import os, sys
-from openerp import tools, netsvc
-import openerp
-import threading
+from openerp import tools
 import glob
 import importlib
-import argparse
-from util import PoolProxy
+
+import util
+import config
 
 # TODO: self install through migrate
 # TODO: rename to something else that is not migrate since that sounds like migration to v8
@@ -24,37 +23,9 @@ def install_module(cr, pool, module_name):
         db_name = tools.config['db_name']
         pool.restart()
 
-class ConfigHelper(object):
-
-    def __init__(self, env=os.environ, config=tools.config):
-        self._env = env
-        self._config = config
-
-    def override_if_set_in_env(self, config_key, env_key):
-        value = self._env.get(env_key)
-        if value is not None:
-            self._config[config_key] = value
-
-
-def cursor():
-    return openerp.modules.registry.RegistryManager.get(
-        threading.current_thread().dbname
-    ).db.cursor()
-
-
-def get_releases_path():
-    releases_path = tools.config.get('releases', None)
-    if not releases_path:
-        print(
-            "Setup 'releases' in config file, it should be"
-            " the absolute path of release steps directory"
-        )
-        sys.exit(1)
-    return releases_path
-
 
 def get_steps():
-    path = get_releases_path()
+    path = config.get_releases_path()
     steps = []
     for filepath in glob.glob(os.path.join(path, "*.py")):
         fn = os.path.basename(filepath)
@@ -98,50 +69,14 @@ def store_applied(cr, pool, name):
     mig_pool.create(cr, 1, {
         "name": name
     })
-    cr.commit()
-
-
-def load_config():
-
-    env = os.environ
-    arguments = parse_args()
-    tools.config.parse_config(['--config', arguments.config])
-    tools.config['log_level'] = 'info'
-    tools.config['syslog'] = False
-    netsvc.init_logger()
-
-    config_helper = ConfigHelper(env, tools.config)
-    override = config_helper.override_if_set_in_env
-    override('db_host', 'DB_HOST')
-    override('db_name', 'DB_NAME')
-    override('db_user', 'DB_USER')
-    override('db_password', 'DB_PASSWORD')
-
-
-def parse_args():
-    prog, args = sys.argv[0], sys.argv[1:]
-    parser = argparse.ArgumentParser(
-        prog=prog
-    )
-    parser.add_argument(
-        '--config',
-        required=True,
-        help=('Absolute path to openerp.conf')
-    )
-    return parser.parse_args(args)
 
 
 def main():
     print "Migrating"
-    load_config()
-
-    db_name = tools.config['db_name']
-
-    pool = PoolProxy(db_name)
-
-    cr = cursor()
-    apply_steps(cr, pool)
-    cr.close()
+    db_name = config.load_config()
+    pool = util.PoolProxy(db_name)
+    with config.cursor() as cr:
+        apply_steps(cr, pool)
 
 
 if __name__ == '__main__':
