@@ -13,6 +13,17 @@ import argparse
 # TODO: Readme , example config file
 
 
+def install_module(cr, pool, module_name):
+    module_pool = pool.get('ir.module.module')
+    module_pool.update_list(cr, 1)
+    module = module_pool.search(cr, 1, [('name', '=', module_name)])
+    module = module[0]
+    module = module_pool.browse(cr, 1, module)
+    if module.state != "installed":
+        module_pool.button_immediate_install(cr, 1, [module.id])
+        db_name = tools.config['db_name']
+        pool.restart()
+
 class ConfigHelper(object):
 
     def __init__(self, env=os.environ, config=tools.config):
