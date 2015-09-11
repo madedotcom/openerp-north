@@ -20,7 +20,7 @@ def install_module(cr, pool, module_name):
     module = module_pool.browse(cr, 1, module)
     if module.state != "installed":
         module_pool.button_immediate_install(cr, 1, [module.id])
-        db_name = tools.config['db_name']
+        tools.config['db_name']
         pool.restart()
 
 
