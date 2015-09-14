@@ -36,6 +36,7 @@ def get_last_applied_step(cr, pool):
 
 
 def apply_steps(cr, pool):
+    util.install_module(cr, pool, 'north')
     last_applied = get_last_applied_step(cr, pool)
     path, steps = get_steps()
     sys.path.append(path)
