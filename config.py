@@ -28,6 +28,11 @@ def parse_args():
         required=True,
         help=('Absolute path to openerp.conf')
     )
+    parser.add_argument(
+        '--loglevel',
+        default='error',
+        help=('Log level: choose from "info", "debug_rpc", "warn", "test", "critical", "debug_sql", "error", "debug", "debug_rpc_answer", "notset"')
+    )
     return parser.parse_args(args)
 
 
@@ -36,7 +41,7 @@ def load_config():
     env = os.environ
     arguments = parse_args()
     tools.config.parse_config(['--config', arguments.config])
-    tools.config['log_level'] = 'info'
+    tools.config['log_level'] = arguments.loglevel
     tools.config['syslog'] = False
     netsvc.init_logger()
 
