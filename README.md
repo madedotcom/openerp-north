@@ -3,7 +3,11 @@
 
 Usage examples:
 
-You want to install a new module testmodule1:
+You want to install a new module testmodule1. Add a key `releases` in
+openerp.conf with the value of the path to the releases folder. This folder
+should be a module so it should have an __init__.py
+
+Your first script:
 
 ```python
 # 0001_install_test_module.py
