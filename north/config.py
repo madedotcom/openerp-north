@@ -32,7 +32,11 @@ def parse_args():
     parser.add_argument(
         '--loglevel',
         default='error',
-        help=('Log level: choose from "info", "debug_rpc", "warn", "test", "critical", "debug_sql", "error", "debug", "debug_rpc_answer", "notset"')
+        help=(
+            'Log level: choose from "info", "debug_rpc", "warn", "test", '
+            '"critical", "debug_sql", "error", "debug", "debug_rpc_answer", '
+            '"notset"'
+        )
     )
     return parser.parse_args(args)
 

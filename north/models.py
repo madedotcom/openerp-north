@@ -18,4 +18,4 @@ class migration(osv.osv):
         'unique(name)',
         'Migrations must be unique!'
     )]
-    _order = 'name'
+    _order = 'name asc'
