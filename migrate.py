@@ -5,13 +5,9 @@ import importlib
 import util
 import config
 
-# TODO: self install through migrate
 # TODO: rename to something else that is not migrate since that sounds like migration to v8
-# TODO: tests
-# TODO: Readme , example config file
 # TODO: what happens for conflicting migrations
 # TODO: integration test
-# TODO: update module
 
 
 def get_steps():
