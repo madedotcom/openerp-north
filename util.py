@@ -5,6 +5,7 @@ class PoolProxy(object):
     _pool = None
     _instance = None
     _db_name = None
+
     def __new__(cls, db_name):
         if not cls._instance:
             cls._db_name = db_name
@@ -42,4 +43,3 @@ def update_module(cr, pool, module_name):
         upgrade_pool = pool.get('base.module.upgrade')
         upgrade_pool.upgrade_module(cr, 1, None)
         pool.restart()
-

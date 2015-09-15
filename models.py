@@ -1,4 +1,5 @@
-from osv import osv, fields
+from osv import osv
+from osv import fields
 
 '''
 TODO: we might want to rename this:
@@ -6,9 +7,15 @@ TODO: we might want to rename this:
     release - does not really represent the concept of one-off script
 '''
 
+
 class migration(osv.osv):
-	_name = 'north.migration'
-	_columns = {
-		'name': fields.char('Name', size=64, required=True)
-	}
-	_sql_constraints = [('name_uniq','unique(name)', 'Migrations must be unique!')]
+    _name = 'north.migration'
+    _columns = {
+        'name': fields.char('Name', size=64, required=True)
+    }
+    _sql_constraints = [(
+        'name_uniq',
+        'unique(name)',
+        'Migrations must be unique!'
+    )]
+    _order = 'name'
